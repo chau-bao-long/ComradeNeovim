@@ -4,6 +4,8 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.OpenFileDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.util.containers.ContainerUtil.newConcurrentSet
@@ -14,6 +16,8 @@ import org.beeender.comradeneovim.ComradeScope
 import org.beeender.comradeneovim.core.*
 import org.beeender.comradeneovim.invokeOnMainLater
 import org.beeender.comradeneovim.invokeOnMainAndWait
+import org.beeender.comradeneovim.utils.getProject
+import org.beeender.comradeneovim.utils.getVirtualFile
 import org.beeender.neovim.BufChangedtickEvent
 import org.beeender.neovim.BufDetachEvent
 import org.beeender.neovim.BufLinesEvent
@@ -181,4 +185,21 @@ class SyncBufferManager(private val nvimInstance: NvimInstance) : Disposable {
         }
         return true
     }
-}
+
+    @RequestHandler(MSG_COMRADE_BUF_SYNC_CURSOR)
+    fun comradeBufSyncCursor(event: ComradeBufSyncCursorParams) {
+        invokeOnMainLater {
+            val project = getProject()
+            val virtualFile = getVirtualFile(event.file)
+
+            ApplicationManager.getApplication().invokeLater {
+                FileEditorManager
+                    .getInstance(project)
+                    .openTextEditor(
+                        OpenFileDescriptor(project, virtualFile!!, event.offset),
+                        true
+                    )
+            }
+        }
+    }
+} 

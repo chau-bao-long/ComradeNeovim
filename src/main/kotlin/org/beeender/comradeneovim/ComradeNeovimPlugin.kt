@@ -1,5 +1,6 @@
 package org.beeender.comradeneovim
 
+import org.beeender.comradeneovim.virtualfile.VirtualFileManager
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
@@ -41,8 +42,7 @@ object Version {
     }
 
     fun toMap() : Map<String, String> {
-        return mapOf(
-                "major" to major.toString(),
+        return mapOf( "major" to major.toString(),
                 "minor" to minor.toString(),
                 "patch" to patch.toString(),
                 "prerelease" to prerelese
@@ -87,6 +87,7 @@ class ComradeNeovimPlugin : BaseComponent, PersistentStateComponent<Settings>, D
             NvimInstanceManager.refresh()
             // Start the singleton InsightProcessor here to avoid cyclic initialization
             InsightProcessor.start()
+            VirtualFileManager.start()
         }
 
         override fun projectClosing(project: Project) {
@@ -119,4 +120,3 @@ class ComradeNeovimPlugin : BaseComponent, PersistentStateComponent<Settings>, D
         super.disposeComponent()
     }
 }
-

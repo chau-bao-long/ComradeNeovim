@@ -26,6 +26,18 @@ class ComradeBufWriteParams(val id: Int) {
     }
 }
 
+class ComradeBufSyncCursorParams(val file: String, val offset: Int) {
+    companion object {
+        @MessageConverterFun
+        fun fromMessage(request: Request) : ComradeBufSyncCursorParams {
+            val map = request.args[0] as Map<*, *>
+            val file = map["file"] as String
+            val offset = map["offset"] as Int
+            return ComradeBufSyncCursorParams(file, offset)
+        }
+    }
+}
+
 class ComradeQuickFixParams(val bufId:Int, val insightId: Int, val fixIndex: Int) {
     companion object {
         @MessageConverterFun

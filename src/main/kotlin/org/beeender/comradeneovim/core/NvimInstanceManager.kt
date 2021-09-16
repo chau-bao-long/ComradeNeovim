@@ -1,5 +1,6 @@
 package org.beeender.comradeneovim.core
 
+import org.beeender.comradeneovim.virtualfile.VirtualFileManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.diagnostic.Logger
